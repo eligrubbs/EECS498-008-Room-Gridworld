@@ -55,6 +55,10 @@ class RoomWorldMDP:
         self.transition_dynamics = np.full((121,4,121), 0, dtype=np.float32)
         change = {0:-11, 1:1, 2: 11, 3:-1}
         for s in range(121):
+            # If terminal or inaccessible
+            if s in self.terminal or s in self.inaccessible:
+                self.transition_dynamics[s,:,s] = 1 # it broadcasts 1 to all actions
+
             # Prevent going out of bounds
             if s % 11 == 0: # can't go left
                 self.transition_dynamics[s,3,s] = 1
