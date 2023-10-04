@@ -17,18 +17,16 @@ Many introductory algorithms will be implemented for the above gridworld
 
 ## On-policy Monte Carlo
 
-## Off-policy Monte Carlo via Importance Sampling
+## Off-policy Monte Carlo
 
-### With Ordinary Importance Sampling
+## SARSA  
 
-### With Weighted Importance Sampling
+- ### SARSA 0  
 
-## Temporal Difference 0
+- ### SARSA n-step
 
-## Temporal Difference n-step
-
-## SARSA
+- ### Expected SARSA
 
 ## Q-learning
 
-## Expected SARSA
+## Dyna Q
