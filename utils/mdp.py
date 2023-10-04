@@ -40,7 +40,7 @@ class RoomWorldMDP:
         #          2: down
         # Will not matter that the terminal/inaccessible states have actions
         # Because the transition dynamics will take them to themselves always
-        self.actions = np.full((121,4), [0,1,2,3])
+        self.actions = np.arange(4)
 
         self.rewards = np.full((121,4), 0)
         # (s,a) that lead to 96
@@ -53,7 +53,7 @@ class RoomWorldMDP:
         self.rewards[105,3]= 1
 
         self.transition_dynamics = np.full((121,4,121), 0, dtype=np.float32)
-        change = {0:-11, 1:1, 2: 11, 3:-1}
+        self.change = {0:-11, 1:1, 2: 11, 3:-1}
         for s in range(121):
             # If terminal or inaccessible
             if s in self.terminal or s in self.inaccessible:
@@ -75,7 +75,7 @@ class RoomWorldMDP:
                 # Every action fails 33% of the time
                 self.transition_dynamics[s,a,s] = 1/3
 
-                s_p = change[a] + s
+                s_p = self.change[a] + s
                 # Do not allow navigation to an inaccessible state
                 if s_p in self.inaccessible:
                     self.transition_dynamics[s,a,s] = 1
@@ -91,8 +91,8 @@ class RoomWorldMDP:
         Returns:
             states: array states of the environment
                     np.ndarray of shape (121,)
-            actions: array of possible actions at each state
-                    np.ndarray of shape (121,4)
+            actions: array of possible actions
+                    np.ndarray of shape (4,)
             transition_dynamics: array of probability of going to s' given s,a
                     np.ndarray of shape (121,4,121)
             rewards: array of reward obtained when executing an (s,a) pair
@@ -130,3 +130,5 @@ if __name__=="__main__":
     # test the dynamics and that they are valid
     p = mdp.transition_dynamics
     npt.assert_equal(p.sum(axis=2), np.full((121,4), 1))
+
+    print(mdp.actions.shape)
