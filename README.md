@@ -12,6 +12,7 @@ Many introductory algorithms will be implemented for the above gridworld
 
 ## Value Iteration
 
+Implementation and description [here](./Algorithms/Value_Iteration/).
 
 ## Policy Iteration  
 
