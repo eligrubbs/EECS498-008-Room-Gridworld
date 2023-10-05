@@ -30,3 +30,11 @@ Many introductory algorithms will be implemented for the above gridworld
 ## Q-learning
 
 ## Dyna Q
+
+## To Run an algorithm
+
+In your terminal run the command. Where the file is the file you want to run minus the `.py` extension.
+
+```python
+python -m Algorithms.path.to.file
+```
