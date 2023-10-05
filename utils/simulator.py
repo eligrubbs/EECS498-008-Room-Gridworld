@@ -30,7 +30,7 @@ class RoomWorldEnv(RoomWorldMDP):
 
         self.steps = 0
 
-        starting_spaces = list(set(self.observation_space) - set(self.terminal) - set(self.inaccessible))
+        starting_spaces = self.accessible
         self.position = int(np.random.choice(starting_spaces, size=1)[0])
 
 

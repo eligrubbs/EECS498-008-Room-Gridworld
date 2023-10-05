@@ -28,6 +28,9 @@ class RoomWorldMDP:
         self.inaccessible = [5,16,38,49,60,71,82,93,115,
                                       55,57,58,59,
                                       72,73,75,76]
+        self.accessible = list(set(range(121))
+                               - set(self.terminal) 
+                               - set(self.inaccessible))
 
         self.gamma = gamma
 
@@ -120,6 +123,27 @@ class RoomWorldMDP:
         Determine whether passed in state is a hallway.
         """
         return state in self.hallways
+    
+    def pprint_policy(self, policy):
+        """
+        Print the policy in a nice format.  
+
+        If stochastic, the action with the highest probability will be chosen for printing.
+        """
+        assert(policy.shape in [(121,), (121,4)])
+        act_map = {0:"^", 1:">", 2:"v", 3:"<"}
+
+        for s in self.states:
+            if(s > 0 and s % 11 == 0):
+                print()
+            if s in self.accessible:
+                print(act_map[policy[s].max()], end= " ")
+            elif s in self.inaccessible:
+                print(" ", end=" ")
+            else:
+                print("G", end=" ")          
+        print()
+
 
 if __name__=="__main__":
     # Test the creation of the MDP
