@@ -1,4 +1,3 @@
-
 from mdp import RoomWorldMDP
 import numpy as np
 # import pygame
