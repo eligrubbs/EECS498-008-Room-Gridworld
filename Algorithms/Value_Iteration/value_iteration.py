@@ -31,15 +31,11 @@ while delta >= theta:
 policy = np.full(v_map.shape, -1)
 
 for s in mdp.states:
-    if s not in mdp.accessible:
-        continue
 
     # pick best action
     act_vals = [(mdp.transition_dynamics[s,a,:] * (mdp.rewards[s,a]*r_growth + mdp.gamma * v_map)).sum() for a in mdp.actions]
     best_action = np.argmax(np.array(act_vals))
     # update policy
-    if s in mdp.accessible:
-        policy[s] = best_action
-    # the -1 is to catch bugs
+    policy[s] = best_action
 
 mdp.pprint_policy(policy)
