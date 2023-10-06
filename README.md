@@ -16,6 +16,8 @@ Implementation and description [here](./Algorithms/Value_Iteration/).
 
 ## Policy Iteration  
 
+Implementation and description [here](./Algorithms/Policy_Iteration/).
+
 ## On-policy Monte Carlo
 
 ## Off-policy Monte Carlo
