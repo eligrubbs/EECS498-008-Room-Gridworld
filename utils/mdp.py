@@ -15,13 +15,15 @@ class RoomWorldMDP:
     Some shaded states fall into the 121 that we consider. They will be inaccessible states.
     """
 
-    def __init__(self, gamma:float = 0.9):
+    def __init__(self, gamma:float = 0.9, reward_scaler: float = 1):
         """
         Initialize the Room Gridworld.
 
         Args:
             gamma: discount rate for the world.
                    default: 0.9
+            reward_scaler: scaling factor for rewards given in MDP. For numerical stability
+                           default: 1
         """
         self.hallways = [27,56,74,104]
         self.terminal = [96,104]
@@ -46,13 +48,13 @@ class RoomWorldMDP:
 
         self.rewards = np.full((121,4), 0)
         # (s,a) that lead to 96
-        self.rewards[107,0] = 1
-        self.rewards[95,1] = 1
-        self.rewards[85,2] = 1
-        self.rewards[97,3] = 1
+        self.rewards[107,0] = 1 * reward_scaler
+        self.rewards[95,1] = 1 * reward_scaler
+        self.rewards[85,2] = 1 * reward_scaler
+        self.rewards[97,3] = 1 * reward_scaler
         # (s,a) that lead to 104
-        self.rewards[103,1]= 1
-        self.rewards[105,3]= 1
+        self.rewards[103,1]= 1 * reward_scaler
+        self.rewards[105,3]= 1 * reward_scaler
 
         self.transition_dynamics = np.full((121,4,121), 0, dtype=np.float32)
         self.change = {0:-11, 1:1, 2: 11, 3:-1}
@@ -68,7 +70,7 @@ class RoomWorldMDP:
                 self.transition_dynamics[s,0,s] = 1
             if s > 109: # can't go down
                 self.transition_dynamics[s,2,s] = 1
-            if s % 10 == 0 and s != 0: # can't go right
+            if (s+1) % 11 == 0 and s != 0: # can't go right
                 self.transition_dynamics[s,1,s] = 1
 
             for a in range(4):

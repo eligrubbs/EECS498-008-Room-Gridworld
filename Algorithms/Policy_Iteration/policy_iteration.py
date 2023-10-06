@@ -1,10 +1,9 @@
 from utils import RoomWorldMDP, get_random_policy
 import numpy as np
 
-mdp = RoomWorldMDP()
 
 # Because the reward is so small, to prevent miniscule numbers, I add a constant growth factor
-r_growth = 1000
+mdp = RoomWorldMDP(reward_scaler=1000)
 
 # initialize
 v_map = np.full(mdp.states.shape, 0)
@@ -24,7 +23,7 @@ while not policy_stable:
     for s in mdp.states:
         old_v = v_map[s]
 
-        act_val = (mdp.transition_dynamics[s,pi[s],:] * (mdp.rewards[s,pi[s]]*r_growth + mdp.gamma * v_map)).sum()
+        act_val = (mdp.transition_dynamics[s,pi[s],:] * (mdp.rewards[s,pi[s]] + mdp.gamma * v_map)).sum()
         v_map[s] = act_val
 
         delta = max(delta, abs(old_v - v_map[s]))
@@ -34,7 +33,7 @@ while not policy_stable:
     for s in mdp.states:
         old_a = pi[s]
 
-        act_vals = [(mdp.transition_dynamics[s,a,:] * (mdp.rewards[s,a]*r_growth + mdp.gamma * v_map)).sum() for a in mdp.actions]
+        act_vals = [(mdp.transition_dynamics[s,a,:] * (mdp.rewards[s,a] + mdp.gamma * v_map)).sum() for a in mdp.actions]
         pi[s] = np.argmax(np.array(act_vals))
 
         if old_a != pi[s]:
