@@ -6,12 +6,12 @@ import numpy as np
 class RoomWorldEnv(RoomWorldMDP):
     metadata = {"render_modes": ["human", "array"], "render_fps": 4}
 
-    def __init__(self, gamma:float = 0.9, max_steps:int = 50, render_mode:str = None):
+    def __init__(self, max_steps:int = 50, render_mode:str = None, **kwargs):
         """
         Simulation Environment for Room World Environment.
 
         """
-        super().__init__(gamma)
+        super().__init__(**kwargs)
 
         self.max_steps = max_steps
         
@@ -45,9 +45,9 @@ class RoomWorldEnv(RoomWorldMDP):
         """
 
         probs = self.transition_dynamics[self.position, action, :]
-        new_pos = np.random.choice(a=121,p=probs)
+        new_pos = int(np.random.choice(a=121,size=1,p=probs))
 
-        reward = self.rewards[self.position, action]
+        reward = self.rewards[self.position, action, new_pos]
 
         self.steps += 1
         
@@ -57,7 +57,7 @@ class RoomWorldEnv(RoomWorldMDP):
         self.position = new_pos
 
         info = self._get_info()
-        return self.position, reward, terminated, truncated, info
+        return self._get_obs(), reward, terminated, truncated, info
 
     def _get_obs(self) -> int:
         """

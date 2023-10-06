@@ -46,15 +46,15 @@ class RoomWorldMDP:
         # Because the transition dynamics will take them to themselves always
         self.actions = np.arange(4)
 
-        self.rewards = np.full((121,4), 0)
+        self.rewards = np.full((121,4,121), 0)
         # (s,a) that lead to 96
-        self.rewards[107,0] = 1 * reward_scaler
-        self.rewards[95,1] = 1 * reward_scaler
-        self.rewards[85,2] = 1 * reward_scaler
-        self.rewards[97,3] = 1 * reward_scaler
+        self.rewards[107,0,96] = 1 * reward_scaler
+        self.rewards[95,1,96] = 1 * reward_scaler
+        self.rewards[85,2,96] = 1 * reward_scaler
+        self.rewards[97,3,96] = 1 * reward_scaler
         # (s,a) that lead to 104
-        self.rewards[103,1]= 1 * reward_scaler
-        self.rewards[105,3]= 1 * reward_scaler
+        self.rewards[103,1,104]= 1 * reward_scaler
+        self.rewards[105,3,104]= 1 * reward_scaler
 
         self.transition_dynamics = np.full((121,4,121), 0, dtype=np.float32)
         self.change = {0:-11, 1:1, 2: 11, 3:-1}
@@ -99,8 +99,8 @@ class RoomWorldMDP:
                     np.ndarray of shape (4,)
             transition_dynamics: array of probability of going to s' given s,a
                     np.ndarray of shape (121,4,121)
-            rewards: array of reward obtained when executing an (s,a) pair
-                    np.ndarray of shape (121,4)
+            rewards: array of reward obtained when executing an (s,a) pair and arriving at s'
+                    np.ndarray of shape (121,4, 121)
         """
 
         return (self.states, self.actions, self.transition_dynamics, self.rewards, self.gamma)
@@ -126,7 +126,7 @@ class RoomWorldMDP:
         """
         return state in self.hallways
     
-    def pprint_policy(self, policy):
+    def pprint_policy(self, policy: np.ndarray):
         """
         Print the policy in a nice format.  
 
@@ -139,7 +139,10 @@ class RoomWorldMDP:
             if(s > 0 and s % 11 == 0):
                 print()
             if s in self.accessible:
-                print(act_map[policy[s].max()], end= " ")
+                if policy.shape == (121,):
+                    print(act_map[policy[s].max()], end= " ")
+                else:
+                    print(act_map[policy[s].argmax()], end= " ")
             elif s in self.inaccessible:
                 print(" ", end=" ")
             else:

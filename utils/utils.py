@@ -1,4 +1,5 @@
 from .mdp import RoomWorldMDP
+from .simulator import RoomWorldEnv
 import numpy as np
 
 def get_random_policy(stochastic: bool = True) -> np.ndarray:
@@ -44,3 +45,50 @@ def get_ep_soft_policy(policy: np.ndarray, epsilon: float = 0.1) -> np.ndarray:
     new_policy = np.array([ep_function(s) for s in range(121)])
 
     return new_policy
+
+def generate_episode(env: RoomWorldEnv, policy) -> list[tuple[int, int, float]]:
+    """
+    Generate an episode in the RoomWorldEnv by executing the passed in policy.
+
+    Args:
+        env: RoomWorldEnv object
+        policy: A valid policy for the RoomWorldMDP/Env
+                np array of shape (121,4) or (121,) if deterministic
+
+    Returns:
+        episode: list of (s_t, a_t, r_t+1) tuples where
+                 s_t: state of the world at time t
+                 a_t: action taken at time t
+                 r_t+1: reward earned at time t+1
+    """
+    episode = []
+
+    s, _ = env.reset()
+
+    while True:
+        a = sample_policy(policy, s)
+        s_p, r, terminated, truncated, _ = env.step(a)
+        
+        episode.append((s, a, r))
+        s = s_p
+
+        if terminated or truncated:
+            break
+
+    return episode
+
+def sample_policy(policy: np.ndarray, state: int) -> int:
+    """
+    Sample the passed in policy.
+
+    Args:
+        policy: policy to sample from
+                np array of shape (121,4) or (121,) if deterministic
+        state: integer representing current state an action must be taken in
+    
+    Returns:
+        action: integer representing which action to take
+    """
+    if policy.shape == (121,4):
+        return int(np.random.choice(4,1,p=policy[state]))
+    return int(policy[state])
