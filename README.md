@@ -24,6 +24,8 @@ Implementation and description [here](./Algorithms/MC_OnPolicy/).
 
 ## Off-policy Monte Carlo
 
+Potentially buggy implementation and description [here](./Algorithms/MC_OffPolicy/).
+
 ## SARSA  
 
 - ### SARSA 0  
