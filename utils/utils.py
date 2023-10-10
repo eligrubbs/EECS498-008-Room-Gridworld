@@ -40,10 +40,29 @@ def get_ep_soft_policy(policy: np.ndarray, epsilon: float = 0.1) -> np.ndarray:
     """
     def ep_function(s):
         probs = np.array([epsilon/4]*4)
-        probs[policy[s].argmax()] += 1-epsilon
+        if policy.shape == (121,):
+            probs[policy[s]] += 1-epsilon
+        else:
+            probs[policy[s].argmax()] += 1-epsilon
         return probs
     new_policy = np.array([ep_function(s) for s in range(121)])
 
+    return new_policy
+
+def ep_soft_from_q_map(q_map: np.ndarray, epsilon: float = 0.1) -> np.ndarray:
+    """
+    Create and return an epsilon soft policy for the RoomWorldMDP/Env from a state-action value map.
+
+    Args:
+        q_map: numpy array with shape (121,4) which holds values for each state, action pair
+        epislon: exploratory probability.
+
+    Returns:
+        new_policy: epsilon-greedy policy w.r.t original q_map and epsilon
+                    np array of size (121,4)
+    """
+    greedy_policy = q_map.argmax(axis=1)
+    new_policy = get_ep_soft_policy(greedy_policy, epsilon=epsilon)
     return new_policy
 
 def generate_episode(env: RoomWorldEnv, policy) -> list[tuple[int, int, float]]:
